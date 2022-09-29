@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bin.cal.dao.CalDalImp">
+
+<!-- 	일정 추가하기  -->
+<insert id="insertCal" parameterType="CalDto">
+INSERT INTO CALBOARD 
+		VALUES (
+		CALBOARD_SEQ.NEXTVAL 
+		,#{id}
+		,#{title}
+		,#{content}
+		,#{mdate}
+		,SYSDATE)
+
+</insert>
+
+	
+<!-- 	일정목록 조회하기 -->
+<select id="calBoardList" parameterType="Map" resultType="CalDto">
+SELECT SEQ ,ID ,TITLE ,CONTENT ,MDATE ,REGDATE  
+	FROM CALBOARD 
+	WHERE ID=#{id}
+		AND SUBSTR(MDATE,1,8) = #{yyyyMMdd}
+		ORDER BY MDATE
+
+</select>
+	
+<!-- 	일정 상세보기 -->
+<select id="calDetatil" parameterType="int" resultType="CalDto">
+SELECT SEQ ,ID ,TITLE ,CONTENT ,MDATE ,REGDATE
+	FROM CALBOARD 
+		WHERE SEQ = #{seq}
+
+</select>
+
+
+<!-- 	일정 수정하기 -->
+<update id="calUpdate" parameterType="CalDto">
+UPDATE  CALBOARD SET
+	TITLE = #{title}
+	,CONTENT = #{content}
+	,MDATE = #{mdate}
+	,REGDATE = SYSDATE 
+WHERE SEQ =#{seq}
+
+</update>
+	
+	
+<!-- 	일정 삭제하기 -->
+<delete id="calMuldel" parameterType="Map">
+DELETE FROM CALBOARD
+	WHERE SEQ IN 
+	<foreach collection="seqs" item="seq" open="(" close=")" separator=",">
+		#{seq}
+	</foreach>
+</delete>
+
+
+<!-- 	일정의 개수 조회하기 -->
+<select id="calCount" parameterType="Map" resultType="int">
+SELECT COUNT(*)
+	FROM CALBOARD 
+		WHERE ID = #{id}
+		AND SUBSTR(MDATE,1,8)=#{yyyyMMdd}
+</select>
+	
+	
+<!-- 	달력에 존재하는 일정 조회하기 (일일별 최대 3개씩 가져오기) -->
+<select id="calViewList" parameterType="Map" resultType="CalDto">
+SELECT RN, SEQ ,ID ,TITLE ,CONTENT ,MDATE ,REGDATE
+	FROM
+		(SELECT ROW_NUMBER() OVER(PARTITION  BY SUBSTR(MDATE,1,8) ORDER BY MDATE) AS RN
+				,SEQ 
+				,ID 
+				,TITLE 
+				,CONTENT 
+				,MDATE 
+				,REGDATE
+			FROM CALBOARD 
+		WHERE ID = #{id} AND SUBSTR(MDATE,1,6)=#{yyyyMM})
+WHERE RN BETWEEN 1 AND 3
+</select>
+	
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+<!-- Advice aop의 joinpoint에 의해서 실행되는 메소드 -->
+<bean id="daoLogger" class="com.bin.cal.aop.DaoLoggerAop"/>
+
+<!-- pointcut aop가 동작되어야 하는 메소드를 선정 -->
+<!-- pointcut은 각각의 실행되어지는 jointpoint마다 다를 수 있음 -->
+<!-- Dao 글자를 포함하는 클래스 하위의 메소드를 대상으로 선정함 -->
+<!--<aop:config>-->
+<!--	<aop:pointcut expression="execution(public * com.bin.cal.model.mapper.*Dao*.*(..))"  id="daoPoint"/>-->
+<!--	<aop:aspect ref="daoLogger">-->
+<!--		<aop:before method="before" pointcut-ref="daoPoint"/>-->
+<!--		<aop:after-returning method="afterReturung" pointcut-ref="daoPoint"/>-->
+<!--		<aop:after-throwing method="afterThrowing" pointcut-ref="daoPoint" throwing="exception"/>-->
+<!--	</aop:aspect>-->
+<!--</aop:config>-->
+
+</beans>
+
+
+
+
+
